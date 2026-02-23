@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weight Loss Tracker</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --border: #1e1e2a;
+    --text: #e8e8ed;
+    --text-dim: #6b6b7b;
+    --accent: #4ade80;
+    --accent-dim: rgba(74, 222, 128, 0.15);
+    --red: #f87171;
+    --red-dim: rgba(248, 113, 113, 0.15);
+    --blue: #60a5fa;
+    --yellow: #fbbf24;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 32px 24px;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .current-weight {
+    font-family: 'Space Mono', monospace;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .weight-change {
+    font-family: 'Space Mono', monospace;
+    font-size: 18px;
+    color: var(--accent);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .stat-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  .green { color: var(--accent); }
+  .red { color: var(--red); }
+  .blue { color: var(--blue); }
+  .yellow { color: var(--yellow); }
+
+  .chart-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+
+  .chart-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+  }
+
+  canvas {
+    width: 100% !important;
+    height: 400px !important;
+  }
+
+  .milestones {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+
+  .milestone-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .milestone-row:last-child { border-bottom: none; }
+
+  .milestone-weight {
+    font-family: 'Space Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    min-width: 80px;
+  }
+
+  .milestone-label {
+    font-size: 14px;
+    color: var(--text-dim);
+    flex: 1;
+    margin: 0 16px;
+  }
+
+  .milestone-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .milestone-check {
+    color: var(--accent);
+    margin-right: 8px;
+  }
+
+  .milestone-pending {
+    color: var(--text-dim);
+    margin-right: 8px;
+  }
+
+  .progress-bar-container {
+    margin-bottom: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+  }
+
+  .progress-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #22d3ee);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  .progress-percent {
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 8px;
+  }
+
+  .weekly-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  th {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  tr:last-child td { border-bottom: none; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Weight Loss Tracker</h1>
+  <div class="title-row">
+    <span class="current-weight" id="currentWeight">191.8</span>
+    <span class="weight-change" id="totalChange"></span>
+  </div>
+
+  <div class="progress-bar-container">
+    <div class="chart-title">Progress to 170 lbs</div>
+    <div class="progress-labels">
+      <span>255 lbs</span>
+      <span class="green">170 lbs</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+    <div class="progress-percent" id="progressPercent"></div>
+  </div>
+
+  <div class="stats-grid" id="statsGrid"></div>
+
+  <div class="chart-container">
+    <div class="chart-title">Weight Over Time + Projection</div>
+    <canvas id="weightChart"></canvas>
+  </div>
+
+  <div class="milestones">
+    <div class="chart-title">Milestones & Projected Dates</div>
+    <div id="milestoneList"></div>
+  </div>
+
+  <div class="weekly-table">
+    <div class="chart-title">Weekly Averages</div>
+    <table id="weeklyTable">
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Avg Weight</th>
+          <th>Change</th>
+          <th>Rate</th>
+        </tr>
+      </thead>
+      <tbody id="weeklyBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const rawData = [
+  ["2025-09-06", 255.0],
+  ["2025-10-18", 219.8], ["2025-10-22", 220.9], ["2025-10-23", 220.2], ["2025-10-24", 219.7],
+  ["2025-10-25", 216.5], ["2025-10-26", 218.8], ["2025-10-27", 220.1], ["2025-10-28", 219.6],
+  ["2025-10-29", 218.9], ["2025-10-30", 218.1], ["2025-10-31", 216.8], ["2025-11-01", 214.0],
+  ["2025-11-03", 218.5], ["2025-11-04", 216.7], ["2025-11-05", 215.4], ["2025-11-06", 215.1],
+  ["2025-11-07", 214.1], ["2025-11-08", 213.3], ["2025-11-10", 215.6], ["2025-11-11", 214.2],
+  ["2025-11-12", 213.8], ["2025-11-13", 213.4], ["2025-11-14", 211.9], ["2025-11-15", 210.1],
+  ["2025-11-16", 209.5], ["2025-11-17", 214.2], ["2025-11-18", 213.4], ["2025-11-19", 212.4],
+  ["2025-11-20", 211.6], ["2025-11-21", 211.0], ["2025-11-22", 210.4], ["2025-11-23", 209.7],
+  ["2025-11-24", 210.6], ["2025-11-25", 211.8], ["2025-11-26", 211.6], ["2025-11-27", 209.4],
+  ["2025-11-28", 213.6], ["2025-11-29", 211.8], ["2025-11-30", 209.6], ["2025-12-01", 211.6],
+  ["2025-12-02", 206.7], ["2025-12-03", 209.7], ["2025-12-04", 208.3], ["2025-12-05", 207.9],
+  ["2025-12-06", 206.4], ["2025-12-08", 211.5], ["2025-12-09", 210.4], ["2025-12-10", 208.6],
+  ["2025-12-11", 207.1], ["2025-12-12", 206.9], ["2025-12-13", 205.7], ["2025-12-14", 205.0],
+  ["2025-12-15", 208.5], ["2025-12-16", 207.6], ["2025-12-18", 206.9], ["2025-12-19", 206.0],
+  ["2025-12-20", 206.0], ["2025-12-21", 206.1], ["2025-12-22", 209.8], ["2025-12-24", 207.2],
+  ["2026-01-05", 209.9], ["2026-01-07", 206.5], ["2026-01-09", 205.7], ["2026-01-10", 203.2],
+  ["2026-01-13", 205.7], ["2026-01-14", 204.9], ["2026-01-15", 203.4], ["2026-01-16", 202.0],
+  ["2026-01-17", 199.6], ["2026-01-18", 200.0], ["2026-01-19", 204.8], ["2026-01-20", 204.4],
+  ["2026-01-21", 202.8], ["2026-01-22", 201.8], ["2026-01-23", 201.3], ["2026-01-24", 199.7],
+  ["2026-01-28", 204.4], ["2026-01-29", 203.4], ["2026-01-30", 201.9], ["2026-01-31", 200.1],
+  ["2026-02-01", 201.4], ["2026-02-02", 202.1], ["2026-02-03", 201.5], ["2026-02-04", 199.7],
+  ["2026-02-05", 198.5], ["2026-02-06", 197.0], ["2026-02-09", 201.4], ["2026-02-10", 199.7],
+  ["2026-02-11", 197.9], ["2026-02-12", 197.6], ["2026-02-13", 197.4], ["2026-02-14", 196.1],
+  ["2026-02-15", 195.9], ["2026-02-16", 201.1], ["2026-02-18", 199.0], ["2026-02-19", 198.2],
+  ["2026-02-20", 196.4], ["2026-02-21", 194.4], ["2026-02-22", 191.8]
+];
+
+const dates = rawData.map(d => new Date(d[0]));
+const weights = rawData.map(d => d[1]);
+
+// Linear regression for trend
+const startDate = dates[0].getTime();
+const xVals = dates.map(d => (d.getTime() - startDate) / (1000 * 60 * 60 * 24));
+const n = xVals.length;
+const sumX = xVals.reduce((a, b) => a + b, 0);
+const sumY = weights.reduce((a, b) => a + b, 0);
+const sumXY = xVals.reduce((a, x, i) => a + x * weights[i], 0);
+const sumXX = xVals.reduce((a, x) => a + x * x, 0);
+const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+const intercept = (sumY - slope * sumX) / n;
+
+const trendLine = xVals.map(x => intercept + slope * x);
+
+// Rate per week
+const ratePerDay = Math.abs(slope);
+const ratePerWeek = ratePerDay * 7;
+
+// 7-day moving average
+const movingAvg = weights.map((w, i) => {
+  if (i < 6) return null;
+  let sum = 0;
+  for (let j = i - 6; j <= i; j++) sum += weights[j];
+  return +(sum / 7).toFixed(1);
+});
+
+// Projections
+const lastDate = dates[dates.length - 1];
+const lastTrend = intercept + slope * xVals[xVals.length - 1];
+const targetWeights = [190, 185, 180, 175, 170];
+const projections = targetWeights.map(target => {
+  const daysToTarget = (lastTrend - target) / ratePerDay;
+  const targetDate = new Date(lastDate.getTime() + daysToTarget * 24 * 60 * 60 * 1000);
+  return { weight: target, date: targetDate, days: Math.round(daysToTarget) };
+});
+
+// Generate projection line data
+const projDates = [];
+const projWeights = [];
+const daysTo170 = (lastTrend - 170) / ratePerDay;
+for (let d = 0; d <= daysTo170 + 7; d += 3) {
+  const projDate = new Date(lastDate.getTime() + d * 24 * 60 * 60 * 1000);
+  const projWeight = lastTrend + slope * d;
+  if (projWeight >= 169) {
+    projDates.push(projDate);
+    projWeights.push(+projWeight.toFixed(1));
+  }
+}
+
+// Stats
+const currentWeight = weights[weights.length - 1];
+const startWeight = weights[0];
+const totalLost = startWeight - currentWeight;
+const daysElapsed = xVals[xVals.length - 1];
+const weeksElapsed = daysElapsed / 7;
+
+// Recent 4-week rate (more accurate than overall)
+const fourWeeksAgo = new Date(lastDate.getTime() - 28 * 24 * 60 * 60 * 1000);
+const recentData = rawData.filter(d => new Date(d[0]) >= fourWeeksAgo);
+const recentStart = recentData[0][1];
+const recentEnd = recentData[recentData.length - 1][1];
+const recentRate = (recentStart - recentEnd) / 4;
+
+document.getElementById('currentWeight').textContent = currentWeight;
+document.getElementById('totalChange').textContent = `↓ ${totalLost.toFixed(1)} lbs from ${startWeight}`;
+
+// Progress bar
+const totalGoal = startWeight - 170;
+const progressPct = ((totalLost / totalGoal) * 100).toFixed(1);
+document.getElementById('progressBar').style.width = progressPct + '%';
+document.getElementById('progressPercent').textContent = `${progressPct}% complete · ${(170 - currentWeight) > 0 ? (currentWeight - 170).toFixed(1) : 0} lbs to go`;
+
+// Stats grid
+const statsHTML = `
+  <div class="stat-card">
+    <div class="stat-label">Total Lost</div>
+    <div class="stat-value green">${totalLost.toFixed(1)} lbs</div>
+    <div class="stat-sub">in ${Math.round(weeksElapsed)} weeks</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Avg Rate (Overall)</div>
+    <div class="stat-value green">${ratePerWeek.toFixed(1)} lbs/wk</div>
+    <div class="stat-sub">trend line slope</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Recent 4-Week Rate</div>
+    <div class="stat-value blue">${recentRate.toFixed(1)} lbs/wk</div>
+    <div class="stat-sub">last 28 days</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Lowest Weigh-In</div>
+    <div class="stat-value yellow">${currentWeight} lbs</div>
+    <div class="stat-sub">Feb 22, 2026</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">ETA to 170</div>
+    <div class="stat-value green">${projections[4].date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
+    <div class="stat-sub">${projections[4].days} days at current trend</div>
+  </div>
+`;
+document.getElementById('statsGrid').innerHTML = statsHTML;
+
+// Milestones
+const milestoneTargets = [
+  { w: 255, label: 'Day 1 — Starting weight', tier: '' },
+  { w: 240, label: 'First 15 down', tier: '' },
+  { w: 220, label: 'Daily tracking begins', tier: '' },
+  { w: 210, label: '45 lbs down', tier: '' },
+  { w: 200, label: 'Under 200 — Onederland', tier: '' },
+  { w: 190, label: 'Facial structure emerging', tier: '' },
+  { w: 185, label: 'Jaw definition visible', tier: '' },
+  { w: 180, label: 'Side profile improving', tier: '' },
+  { w: 175, label: 'Lean face territory', tier: '' },
+  { w: 170, label: 'Target weight', tier: '' },
+  { w: 165, label: 'Stretch goal — true lean', tier: '' },
+];
+
+let milestoneHTML = '';
+milestoneTargets.forEach(m => {
+  const achieved = currentWeight <= m.w;
+  const icon = achieved ? '<span class="milestone-check">✓</span>' : '<span class="milestone-pending">○</span>';
+  let dateStr = '';
+  if (achieved) {
+    const hitEntry = rawData.find(d => d[1] <= m.w);
+    if (hitEntry) dateStr = new Date(hitEntry[0]).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  } else {
+    const daysNeeded = (lastTrend - m.w) / ratePerDay;
+    const projDate = new Date(lastDate.getTime() + daysNeeded * 24 * 60 * 60 * 1000);
+    dateStr = '~' + projDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  const tierBadge = m.tier ? `<span style="font-family:'Space Mono';font-size:11px;color:var(--accent);margin-left:8px;">${m.tier}</span>` : '';
+  milestoneHTML += `
+    <div class="milestone-row">
+      <div>${icon}<span class="milestone-weight" style="color:${achieved ? 'var(--accent)' : 'var(--text-dim)'}">${m.w}</span></div>
+      <div class="milestone-label">${m.label}${tierBadge}</div>
+      <div class="milestone-date">${dateStr}</div>
+    </div>
+  `;
+});
+document.getElementById('milestoneList').innerHTML = milestoneHTML;
+
+// Weekly averages table
+function getWeekNumber(d) {
+  const start = new Date(2025, 9, 13); // week starting Oct 13
+  return Math.floor((d - start) / (7 * 24 * 60 * 60 * 1000));
+}
+
+const weeklyData = {};
+rawData.forEach(([dateStr, weight]) => {
+  const d = new Date(dateStr);
+  const weekStart = new Date(d);
+  weekStart.setDate(d.getDate() - d.getDay());
+  const key = weekStart.toISOString().slice(0, 10);
+  if (!weeklyData[key]) weeklyData[key] = [];
+  weeklyData[key].push(weight);
+});
+
+const weeks = Object.keys(weeklyData).sort();
+let weeklyHTML = '';
+weeks.forEach((week, i) => {
+  const avg = weeklyData[week].reduce((a, b) => a + b, 0) / weeklyData[week].length;
+  const prevAvg = i > 0 ? weeklyData[weeks[i-1]].reduce((a, b) => a + b, 0) / weeklyData[weeks[i-1]].length : null;
+  const change = prevAvg ? avg - prevAvg : null;
+  const weekDate = new Date(week);
+  const weekLabel = weekDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  
+  weeklyHTML += `
+    <tr>
+      <td>${weekLabel}</td>
+      <td style="font-family:'Space Mono',monospace;font-weight:700">${avg.toFixed(1)}</td>
+      <td style="font-family:'Space Mono',monospace;color:${change !== null && change < 0 ? 'var(--accent)' : change > 0 ? 'var(--red)' : 'var(--text-dim)'}">${change !== null ? (change > 0 ? '+' : '') + change.toFixed(1) : '—'}</td>
+      <td style="font-family:'Space Mono',monospace;color:${change !== null && change < 0 ? 'var(--accent)' : change > 0 ? 'var(--red)' : 'var(--text-dim)'}">${change !== null ? (change > 0 ? '+' : '') + change.toFixed(1) + '/wk' : '—'}</td>
+    </tr>
+  `;
+});
+document.getElementById('weeklyBody').innerHTML = weeklyHTML;
+
+// Chart
+const allDates = [...dates.map(d => d.toISOString().slice(0, 10)), ...projDates.map(d => d.toISOString().slice(0, 10))];
+const uniqueDates = [...new Set(allDates)].sort();
+
+const ctx = document.getElementById('weightChart').getContext('2d');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: [...dates.map(d => d.toISOString().slice(0, 10)), ...projDates.map(d => d.toISOString().slice(0, 10))],
+    datasets: [
+      {
+        label: 'Daily Weight',
+        data: [...weights, ...Array(projDates.length).fill(null)],
+        borderColor: 'rgba(255, 255, 255, 0.3)',
+        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+        pointRadius: 1.5,
+        pointBackgroundColor: 'rgba(255, 255, 255, 0.5)',
+        borderWidth: 1,
+        tension: 0.1,
+        fill: false,
+      },
+      {
+        label: '7-Day Average',
+        data: [...movingAvg, ...Array(projDates.length).fill(null)],
+        borderColor: '#60a5fa',
+        borderWidth: 2.5,
+        pointRadius: 0,
+        tension: 0.3,
+        fill: false,
+      },
+      {
+        label: 'Trend Line',
+        data: [...trendLine.map(v => +v.toFixed(1)), ...Array(projDates.length).fill(null)],
+        borderColor: 'rgba(74, 222, 128, 0.5)',
+        borderWidth: 1.5,
+        borderDash: [6, 4],
+        pointRadius: 0,
+        tension: 0,
+        fill: false,
+      },
+      {
+        label: 'Projection',
+        data: [...Array(weights.length).fill(null), ...projWeights],
+        borderColor: 'rgba(74, 222, 128, 0.35)',
+        borderWidth: 2,
+        borderDash: [4, 6],
+        pointRadius: 0,
+        tension: 0,
+        fill: false,
+      },
+      {
+        label: '170 Target',
+        data: Array(weights.length + projDates.length).fill(170),
+        borderColor: 'rgba(251, 191, 36, 0.3)',
+        borderWidth: 1,
+        borderDash: [3, 3],
+        pointRadius: 0,
+        fill: false,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      intersect: false,
+      mode: 'index',
+    },
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+        labels: {
+          color: '#6b6b7b',
+          font: { family: 'DM Sans', size: 11 },
+          boxWidth: 12,
+          padding: 16,
+        }
+      },
+      tooltip: {
+        backgroundColor: '#1e1e2a',
+        titleColor: '#e8e8ed',
+        bodyColor: '#e8e8ed',
+        borderColor: '#2e2e3a',
+        borderWidth: 1,
+        titleFont: { family: 'Space Mono', size: 12 },
+        bodyFont: { family: 'DM Sans', size: 12 },
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: '#4a4a5a',
+          font: { family: 'Space Mono', size: 10 },
+          maxTicksLimit: 12,
+          maxRotation: 45,
+        },
+        grid: { color: 'rgba(255,255,255,0.03)' },
+      },
+      y: {
+        min: 165,
+        max: 260,
+        ticks: {
+          color: '#4a4a5a',
+          font: { family: 'Space Mono', size: 11 },
+          stepSize: 5,
+        },
+        grid: { color: 'rgba(255,255,255,0.05)' },
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
