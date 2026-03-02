@@ -152,6 +152,46 @@
 
   canvas { width: 100% !important; height: 400px !important; }
 
+  .chart-footer {
+    display: flex;
+    justify-content: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    margin-top: 16px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .range-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px;
+  }
+
+  .range-tab {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .range-tab:hover { color: var(--text); }
+  .range-tab.active {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
   .milestones {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -260,6 +300,245 @@
   }
 
   tr:last-child td { border-bottom: none; }
+
+  /* ── Log Entry Panel ── */
+  .log-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+
+  .log-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .log-form {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .log-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .log-field label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+  }
+
+  .log-field input {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 160px;
+  }
+
+  .log-field input:focus { border-color: var(--accent); }
+
+  .log-submit {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 1px solid var(--accent);
+    background: rgba(74, 222, 128, 0.1);
+    color: var(--accent);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .log-submit:hover { background: rgba(74, 222, 128, 0.2); }
+  .log-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .log-status {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    margin-top: 10px;
+    min-height: 16px;
+  }
+
+  .log-status.ok { color: var(--accent); }
+  .log-status.err { color: var(--red); }
+  .log-status.loading { color: var(--text-dim); }
+
+  /* ── Settings button + modal ── */
+  .settings-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .settings-btn:hover { border-color: var(--text-dim); color: var(--text); }
+  .settings-btn.configured { border-color: var(--accent); color: var(--accent); }
+
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-backdrop.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px;
+    width: min(520px, 90vw);
+  }
+
+  .modal-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .modal-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  .modal-sub a { color: var(--blue); text-decoration: none; }
+  .modal-sub a:hover { text-decoration: underline; }
+
+  .modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .modal-field label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+  }
+
+  .modal-field input {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  .modal-field input:focus { border-color: var(--accent); }
+
+  .modal-field .hint {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+
+  .modal-btn-save {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 18px;
+    border-radius: 6px;
+    border: 1px solid var(--accent);
+    background: rgba(74,222,128,0.1);
+    color: var(--accent);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .modal-btn-save:hover { background: rgba(74,222,128,0.2); }
+
+  .modal-btn-cancel {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 18px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .modal-btn-cancel:hover { border-color: var(--text-dim); color: var(--text); }
+
+  /* ── Gist sync indicator ── */
+  .sync-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+  }
+
+  .sync-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-dim);
+  }
+
+  .sync-dot.ok { background: var(--accent); }
+  .sync-dot.err { background: var(--red); }
+  .sync-dot.loading { background: var(--yellow); animation: pulse 1s infinite; }
+
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 </style>
 </head>
 <body>
@@ -288,9 +567,16 @@
   <div class="chart-container">
     <div class="chart-header">
       <div class="chart-title">Weight Over Time + Projection</div>
-      <div class="toggle-group" id="toggleGroup"></div>
+      <div class="range-tabs" id="rangeTabs">
+        <button class="range-tab" data-range="7">7D</button>
+        <button class="range-tab" data-range="30">30D</button>
+        <button class="range-tab active" data-range="all">All</button>
+      </div>
     </div>
     <canvas id="weightChart"></canvas>
+    <div class="chart-footer">
+      <div class="toggle-group" id="toggleGroup"></div>
+    </div>
   </div>
 
   <div class="milestones">
@@ -393,10 +679,14 @@ for (let d = 0; d <= daysTo170 + 7; d += 3) {
 // Stats
 const currentWeight = weights[weights.length - 1];
 const startWeight = weights[0];
-const totalLost = startWeight - currentWeight;
 const daysElapsed = xVals[xVals.length - 1];
 const weeksElapsed = daysElapsed / 7;
-const lbsToGo = currentWeight - 170;
+
+// Use 7-day average as the display weight for header + progress bar
+const latestMovingAvg = movingAvg.filter(v => v !== null);
+const displayWeight = latestMovingAvg[latestMovingAvg.length - 1];
+const totalLost = startWeight - displayWeight;
+const lbsToGo = displayWeight - 170;
 
 const fourWeeksAgo = new Date(lastDate.getTime() - 28 * 24 * 60 * 60 * 1000);
 const recentData = rawData.filter(d => new Date(d[0]) >= fourWeeksAgo);
@@ -409,8 +699,8 @@ const lowestIdx = weights.indexOf(lowestWeight);
 const lowestDate = dates[lowestIdx];
 const lowestDateStr = lowestDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
-document.getElementById('currentWeight').textContent = currentWeight;
-document.getElementById('totalChange').textContent = `↓ ${totalLost.toFixed(1)} lbs from ${startWeight}`;
+document.getElementById('currentWeight').textContent = displayWeight.toFixed(1);
+document.getElementById('totalChange').textContent = `↓ ${totalLost.toFixed(1)} lbs from ${startWeight} · 7-day avg`;
 
 // Progress bar
 const totalGoal = startWeight - 170;
@@ -425,7 +715,7 @@ document.getElementById('statsGrid').innerHTML = `
   <div class="stat-card">
     <div class="stat-label">Total Lost</div>
     <div class="stat-value green">${totalLost.toFixed(1)} lbs</div>
-    <div class="stat-sub">in ${Math.round(weeksElapsed)} weeks</div>
+    <div class="stat-sub">in ${Math.round(weeksElapsed)} weeks · 7-day avg</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Avg Rate (Overall)</div>
@@ -466,7 +756,7 @@ const milestoneTargets = [
 
 let milestoneHTML = '';
 milestoneTargets.forEach(m => {
-  const achieved = currentWeight <= m.w;
+  const achieved = displayWeight <= m.w;
   const icon = achieved ? '<span class="milestone-check">✓</span>' : '<span class="milestone-pending">○</span>';
   let dateStr = '';
   if (achieved) {
@@ -520,26 +810,54 @@ weeks.forEach((week, i) => {
 });
 document.getElementById('weeklyBody').innerHTML = weeklyHTML;
 
-// Chart
+// Chart — dataset index 4 is the target line (always visible, no toggle)
 const toggleConfig = [
-  { label: 'Daily', colorClass: 'on-white' },
-  { label: '7-Day Avg', colorClass: 'on-blue' },
-  { label: 'Trend', colorClass: 'on-green' },
-  { label: 'Projection', colorClass: 'on-green' },
-  { label: 'Target', colorClass: 'on-yellow' },
+  { label: 'Daily', colorClass: 'on-white', datasetIndex: 0 },
+  { label: '7-Day Avg', colorClass: 'on-blue', datasetIndex: 1 },
+  { label: 'Trend', colorClass: 'on-green', datasetIndex: 2 },
+  { label: 'Projection', colorClass: 'on-green', datasetIndex: 3 },
 ];
 
-const ctx = document.getElementById('weightChart').getContext('2d');
-const weightChart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: [...dates.map(d => d.toISOString().slice(0, 10)), ...projDates.map(d => d.toISOString().slice(0, 10))],
+// Build datasets for a given range ('7', '30', or 'all')
+function buildChartData(range) {
+  let filteredDates = dates;
+  let filteredWeights = weights;
+  let filteredTrend = trendLine;
+  let filteredMovingAvg = movingAvg;
+
+  if (range !== 'all') {
+    const days = parseInt(range);
+    const cutoff = new Date(lastDate.getTime() - days * 24 * 60 * 60 * 1000);
+    const startIdx = rawData.findIndex(d => new Date(d[0]) >= cutoff);
+    filteredDates = dates.slice(startIdx);
+    filteredWeights = weights.slice(startIdx);
+    filteredTrend = trendLine.slice(startIdx);
+    filteredMovingAvg = movingAvg.slice(startIdx);
+  }
+
+  // Only include projection on 'all' view
+  const includeProjDates = range === 'all' ? projDates : [];
+  const includeProjWeights = range === 'all' ? projWeights : [];
+  const projLen = includeProjDates.length;
+
+  const labels = [
+    ...filteredDates.map(d => d.toISOString().slice(0, 10)),
+    ...includeProjDates.map(d => d.toISOString().slice(0, 10))
+  ];
+
+  // Dynamic y scale range
+  const allVisible = [...filteredWeights, ...includeProjWeights];
+  const yMin = Math.floor(Math.min(...allVisible) / 5) * 5 - 5;
+  const yMax = Math.ceil(Math.max(...allVisible) / 5) * 5 + 5;
+
+  return {
+    labels,
     datasets: [
       {
         label: 'Daily Weight',
-        data: [...weights, ...Array(projDates.length).fill(null)],
+        data: [...filteredWeights, ...Array(projLen).fill(null)],
         borderColor: 'rgba(255, 255, 255, 0.3)',
-        pointRadius: 1.5,
+        pointRadius: range === '7' ? 3 : 1.5,
         pointBackgroundColor: 'rgba(255, 255, 255, 0.5)',
         borderWidth: 1,
         tension: 0.1,
@@ -547,7 +865,7 @@ const weightChart = new Chart(ctx, {
       },
       {
         label: '7-Day Average',
-        data: [...movingAvg, ...Array(projDates.length).fill(null)],
+        data: [...filteredMovingAvg, ...Array(projLen).fill(null)],
         borderColor: '#60a5fa',
         borderWidth: 2.5,
         pointRadius: 0,
@@ -556,7 +874,7 @@ const weightChart = new Chart(ctx, {
       },
       {
         label: 'Trend Line',
-        data: [...trendLine.map(v => +v.toFixed(1)), ...Array(projDates.length).fill(null)],
+        data: [...filteredTrend.map(v => +v.toFixed(1)), ...Array(projLen).fill(null)],
         borderColor: 'rgba(74, 222, 128, 0.5)',
         borderWidth: 1.5,
         borderDash: [6, 4],
@@ -566,7 +884,7 @@ const weightChart = new Chart(ctx, {
       },
       {
         label: 'Projection',
-        data: [...Array(weights.length).fill(null), ...projWeights],
+        data: [...Array(filteredWeights.length).fill(null), ...includeProjWeights],
         borderColor: 'rgba(74, 222, 128, 0.35)',
         borderWidth: 2,
         borderDash: [4, 6],
@@ -576,15 +894,26 @@ const weightChart = new Chart(ctx, {
       },
       {
         label: '170 Target',
-        data: Array(weights.length + projDates.length).fill(170),
+        data: Array(filteredWeights.length + projLen).fill(170),
         borderColor: 'rgba(251, 191, 36, 0.3)',
         borderWidth: 1,
         borderDash: [3, 3],
         pointRadius: 0,
         fill: false,
       }
-    ]
-  },
+    ],
+    yMin,
+    yMax,
+  };
+}
+
+let currentRange = 'all';
+const initialData = buildChartData(currentRange);
+
+const ctx = document.getElementById('weightChart').getContext('2d');
+const weightChart = new Chart(ctx, {
+  type: 'line',
+  data: { labels: initialData.labels, datasets: initialData.datasets },
   options: {
     responsive: true,
     maintainAspectRatio: false,
@@ -607,24 +936,53 @@ const weightChart = new Chart(ctx, {
         grid: { color: 'rgba(255,255,255,0.03)' },
       },
       y: {
-        min: 165,
-        max: 260,
-        ticks: { color: '#4a4a5a', font: { family: 'Space Mono', size: 11 }, stepSize: 10 },
+        min: initialData.yMin,
+        max: initialData.yMax,
+        ticks: { color: '#4a4a5a', font: { family: 'Space Mono', size: 11 }, stepSize: 5 },
         grid: { color: 'rgba(255,255,255,0.05)' },
       }
     }
   }
 });
 
-// Build toggle buttons
+// Remember hidden state per dataset across range switches
+const hiddenState = [false, false, false, false]; // indices 0-3 (target is always shown)
+
+// Range tab switching
+document.querySelectorAll('.range-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.range-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentRange = tab.dataset.range;
+
+    const newData = buildChartData(currentRange);
+    weightChart.data.labels = newData.labels;
+    newData.datasets.forEach((ds, i) => {
+      weightChart.data.datasets[i].data = ds.data;
+      weightChart.data.datasets[i].pointRadius = ds.pointRadius;
+    });
+
+    // Restore hidden states
+    hiddenState.forEach((hidden, i) => {
+      weightChart.getDatasetMeta(i).hidden = hidden;
+    });
+
+    weightChart.options.scales.y.min = newData.yMin;
+    weightChart.options.scales.y.max = newData.yMax;
+    weightChart.update();
+  });
+});
+
+// Build series toggle buttons (only for the first 4 datasets — Target line has no toggle)
 const toggleGroup = document.getElementById('toggleGroup');
-toggleConfig.forEach((cfg, i) => {
+toggleConfig.forEach((cfg) => {
   const btn = document.createElement('button');
   btn.className = `toggle-btn ${cfg.colorClass}`;
   btn.textContent = cfg.label;
   btn.addEventListener('click', () => {
-    const meta = weightChart.getDatasetMeta(i);
+    const meta = weightChart.getDatasetMeta(cfg.datasetIndex);
     meta.hidden = !meta.hidden;
+    hiddenState[cfg.datasetIndex] = meta.hidden;
     btn.className = meta.hidden ? 'toggle-btn' : `toggle-btn ${cfg.colorClass}`;
     weightChart.update();
   });
