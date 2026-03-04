@@ -701,7 +701,7 @@ const lowestDate = dates[lowestIdx];
 const lowestDateStr = lowestDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
 document.getElementById('currentWeight').textContent = displayWeight.toFixed(1);
-document.getElementById('totalChange').textContent = `↓ ${totalLost.toFixed(1)} lbs from ${startWeight} · 7-day avg`;
+document.getElementById('totalChange').textContent = `↓ ${totalLost.toFixed(1)} lbs from ${startWeight}`;
 
 // Progress bar
 const totalGoal = startWeight - 170;
@@ -716,7 +716,7 @@ document.getElementById('statsGrid').innerHTML = `
   <div class="stat-card">
     <div class="stat-label">Total Lost</div>
     <div class="stat-value green">${totalLost.toFixed(1)} lbs</div>
-    <div class="stat-sub">in ${Math.round(weeksElapsed)} weeks · 7-day avg</div>
+    <div class="stat-sub">in ${Math.round(weeksElapsed)} weeks</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Avg Rate (Overall)</div>
