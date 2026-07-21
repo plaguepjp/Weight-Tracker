@@ -551,10 +551,10 @@
   </div>
 
   <div class="progress-bar-container">
-    <div class="chart-title" style="margin-bottom:12px">Progress to 170 lbs</div>
+    <div class="chart-title" style="margin-bottom:12px">Progress to 160 lbs</div>
     <div class="progress-labels">
       <span>255 lbs</span>
-      <span class="green">170 lbs</span>
+      <span class="green">160 lbs</span>
     </div>
     <div class="progress-bar-bg">
       <div class="progress-bar-fill" id="progressBar"></div>
@@ -679,20 +679,23 @@ const movingAvg = weights.map((w, i) => {
 // Projections
 const lastDate = dates[dates.length - 1];
 const lastTrend = intercept + slope * xVals[xVals.length - 1];
-const targetWeights = [190, 185, 180, 175, 170];
+const targetWeights = [190, 185, 180, 175, 170, 165, 160, 155];
 const projections = targetWeights.map(target => {
   const daysToTarget = (lastTrend - target) / ratePerDay;
   const targetDate = new Date(lastDate.getTime() + daysToTarget * 24 * 60 * 60 * 1000);
   return { weight: target, date: targetDate, days: Math.round(daysToTarget) };
 });
 
+// Index of the primary goal (160) inside targetWeights
+const goalIdx = targetWeights.indexOf(160);
+
 const projDates = [];
 const projWeights = [];
-const daysTo170 = (lastTrend - 170) / ratePerDay;
-for (let d = 0; d <= daysTo170 + 7; d += 3) {
+const daysToGoal = (lastTrend - 160) / ratePerDay;
+for (let d = 0; d <= daysToGoal + 7; d += 3) {
   const projDate = new Date(lastDate.getTime() + d * 24 * 60 * 60 * 1000);
   const projWeight = lastTrend + slope * d;
-  if (projWeight >= 169) {
+  if (projWeight >= 159) {
     projDates.push(projDate);
     projWeights.push(+projWeight.toFixed(1));
   }
@@ -708,7 +711,7 @@ const weeksElapsed = daysElapsed / 7;
 const latestMovingAvg = movingAvg.filter(v => v !== null);
 const displayWeight = latestMovingAvg[latestMovingAvg.length - 1];
 const totalLost = startWeight - displayWeight;
-const lbsToGo = displayWeight - 170;
+const lbsToGo = displayWeight - 160;
 
 const fourWeeksAgo = new Date(lastDate.getTime() - 28 * 24 * 60 * 60 * 1000);
 const recentData = rawData.filter(d => new Date(d[0]) >= fourWeeksAgo);
@@ -725,7 +728,7 @@ document.getElementById('currentWeight').textContent = displayWeight.toFixed(1);
 document.getElementById('totalChange').textContent = `↓ ${totalLost.toFixed(1)} lbs from ${startWeight}`;
 
 // Progress bar
-const totalGoal = startWeight - 170;
+const totalGoal = startWeight - 160;
 const progressPct = Math.min(((totalLost / totalGoal) * 100), 100).toFixed(1);
 document.getElementById('progressBar').style.width = progressPct + '%';
 document.getElementById('progressPercent').textContent = lbsToGo > 0
@@ -755,9 +758,9 @@ document.getElementById('statsGrid').innerHTML = `
     <div class="stat-sub">${lowestDateStr}</div>
   </div>
   <div class="stat-card">
-    <div class="stat-label">ETA to 170</div>
-    <div class="stat-value green">${projections[4].date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
-    <div class="stat-sub">${projections[4].days} days at current trend</div>
+    <div class="stat-label">ETA to 160</div>
+    <div class="stat-value green">${projections[goalIdx].date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
+    <div class="stat-sub">${projections[goalIdx].days} days at current trend</div>
   </div>
 `;
 
@@ -772,8 +775,10 @@ const milestoneTargets = [
   { w: 185, label: '70 lbs down' },
   { w: 180, label: '75 lbs down — Into the 170s' },
   { w: 175, label: '80 lbs down' },
-  { w: 170, label: '85 lbs down — Target weight' },
-  { w: 165, label: '90 lbs down — Stretch goal' },
+  { w: 170, label: '85 lbs down — Into the 160s' },
+  { w: 165, label: '90 lbs down' },
+  { w: 160, label: '95 lbs down — Target weight' },
+  { w: 155, label: '100 lbs down — Stretch goal' },
 ];
 
 let milestoneHTML = '';
@@ -915,8 +920,8 @@ function buildChartData(range) {
         fill: false,
       },
       {
-        label: '170 Target',
-        data: Array(filteredWeights.length + projLen).fill(170),
+        label: '160 Target',
+        data: Array(filteredWeights.length + projLen).fill(160),
         borderColor: 'rgba(251, 191, 36, 0.3)',
         borderWidth: 1,
         borderDash: [3, 3],
