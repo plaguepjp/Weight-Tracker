@@ -1,130 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
-</head>
-<body>
-<x-dc>
-<helmet>
+<title>Weight Record</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-  body { margin: 0; background: #faf8f5; font-family: 'Newsreader', Georgia, serif; -webkit-font-smoothing: antialiased; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #faf8f5; color: #1a1815; font-family: 'Newsreader', Georgia, serif; -webkit-font-smoothing: antialiased; padding: clamp(28px,5vw,72px) clamp(20px,5vw,64px); }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: #8a8175; }
+  .meta { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.5px; color: #8a8175; }
+  header { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; flex-wrap: wrap; border-bottom: 1px solid #d8d2c8; padding-bottom: 18px; margin-bottom: clamp(32px,5vw,56px); }
+  .hero { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: clamp(32px,5vw,64px); align-items: end; margin-bottom: clamp(36px,5vw,56px); }
+  .big { display: flex; align-items: baseline; gap: 12px; }
+  .big b { font-size: clamp(84px,11vw,132px); line-height: 0.84; font-weight: 300; letter-spacing: -0.04em; }
+  .big span { font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 1.5px; color: #8a8175; padding-bottom: 14px; }
+  .caption { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 1px; color: #8a8175; margin-top: 14px; line-height: 1.7; }
+  .register { display: flex; flex-direction: column; }
+  .register div { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 11px 0; border-bottom: 1px solid #e2ddd4; }
+  .register div:last-child { border-bottom: none; }
+  .register dt { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #8a8175; }
+  .register dd { font-size: 26px; white-space: nowrap; }
+  .progress { margin-bottom: clamp(36px,5vw,52px); }
+  .progress .labels { display: flex; justify-content: space-between; gap: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #8a8175; margin-bottom: 9px; }
+  .progress .track { position: relative; height: 3px; background: #e2ddd4; }
+  .progress .fill { position: absolute; left: 0; top: 0; bottom: 0; background: #2f4f3c; }
+  .chart-head { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+  .chart-head .right { display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap; }
+  .tabs { display: flex; gap: 2px; }
+  .tabs button { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 13px; min-height: 32px; cursor: pointer; border: 1px solid #d8d2c8; background: transparent; color: #8a8175; }
+  .tabs button.on { border-color: #1a1815; background: #1a1815; color: #faf8f5; }
+  .chart { height: clamp(240px,32vw,320px); position: relative; }
+  section.block { margin-top: clamp(40px,5vw,56px); padding-top: 24px; border-top: 1px solid #d8d2c8; }
+  .block-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+  .cols { column-gap: clamp(24px,4vw,48px); }
+  #weekly { columns: 300px; }
+  #milestones { columns: 330px; }
+  .week-row { display: grid; grid-template-columns: 76px 1fr auto; align-items: baseline; gap: 12px; padding: 9px 0; border-bottom: 1px solid #e8e3da; break-inside: avoid; }
+  .ms-row { display: grid; grid-template-columns: auto 62px 1fr auto; align-items: baseline; gap: 10px; padding: 10px 0; border-bottom: 1px solid #e8e3da; break-inside: avoid; }
+  .k { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1px; color: #8a8175; white-space: nowrap; }
+  .v { font-size: 20px; }
+  .d { font-family: 'IBM Plex Mono', monospace; font-size: 12px; white-space: nowrap; }
+  .ms-w { font-size: 22px; }
+  .ms-l { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: #a09889; }
+  .ms-d { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8a8175; white-space: nowrap; }
   a { color: #2f4f3c; text-decoration: none; }
   a:hover { color: #1a1815; text-decoration: underline; }
 </style>
-</helmet>
-<template id="__bundler_thumbnail" data-bg-color="#faf8f5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect width="200" height="200" fill="#faf8f5"/><rect x="60" y="96" width="80" height="3" fill="#2f4f3c"/><text x="100" y="86" text-anchor="middle" font-family="Georgia, serif" font-size="48" fill="#1a1815">170</text><text x="100" y="128" text-anchor="middle" font-family="monospace" font-size="13" letter-spacing="2" fill="#8a8175">LBS</text></svg></template>
-<div style="background:#faf8f5;color:#1a1815;min-height:100vh;padding:clamp(28px,5vw,72px) clamp(20px,5vw,64px);font-family:'Newsreader',Georgia,serif">
-  <div style="max-width:1120px;margin:0 auto">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Weight Record</div>
+    <div class="meta" id="headMeta"></div>
+  </header>
 
-    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;border-bottom:1px solid #d8d2c8;padding-bottom:18px;margin-bottom:clamp(32px,5vw,56px)">
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#8a8175">Weight Record</div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.5px;color:#8a8175">Day {{ dayCount }} · {{ entryCount }} entries · {{ lastDateLong }}</div>
+  <div class="hero">
+    <div>
+      <div class="big"><b id="displayWeight"></b><span>LBS</span></div>
+      <div class="caption" id="caption"></div>
     </div>
-
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:clamp(32px,5vw,64px);align-items:end;margin-bottom:clamp(36px,5vw,56px)">
-      <div>
-        <div style="display:flex;align-items:baseline;gap:12px">
-          <div style="font-size:clamp(84px,11vw,132px);line-height:0.84;font-weight:300;letter-spacing:-0.04em">{{ displayWeight }}</div>
-          <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:1.5px;color:#8a8175;padding-bottom:14px">LBS</div>
-        </div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:1px;color:#8a8175;margin-top:14px;line-height:1.7">Seven-day mean · {{ lastRawLabel }} last measured</div>
-      </div>
-      <div style="display:flex;flex-direction:column">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:11px 0;border-bottom:1px solid #e2ddd4">
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a8175">Total reduction</span>
-          <span style="font-size:26px;white-space:nowrap">{{ totalLost }} lbs</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:11px 0;border-bottom:1px solid #e2ddd4">
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a8175">Remaining to {{ goalLabel }}</span>
-          <span style="font-size:26px;white-space:nowrap">{{ toGo }} lbs</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:11px 0;border-bottom:1px solid #e2ddd4">
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a8175">Rate, 4 weeks</span>
-          <span style="font-size:26px;white-space:nowrap">{{ recentRate }} lbs/wk</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:11px 0;border-bottom:1px solid #e2ddd4">
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a8175">Trend, overall</span>
-          <span style="font-size:26px;white-space:nowrap">{{ ratePerWeek }} lbs/wk</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:11px 0;border-bottom:1px solid #e2ddd4">
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a8175">Lowest measured</span>
-          <span style="font-size:26px;white-space:nowrap">{{ lowestWeight }} lbs</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:11px 0">
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a8175">Body mass index</span>
-          <span style="font-size:26px;white-space:nowrap">{{ bmi }}</span>
-        </div>
-      </div>
-    </div>
-
-    <div style="margin-bottom:clamp(36px,5vw,52px)">
-      <div style="display:flex;justify-content:space-between;gap:16px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a8175;margin-bottom:9px">
-        <span>{{ startLabel }}</span>
-        <span style="text-align:center">{{ progressPct }}% of the way to {{ goalLabel }}</span>
-        <span>{{ goalLabel }}</span>
-      </div>
-      <div style="position:relative;height:3px;background:#e2ddd4">
-        <div style="position:absolute;left:0;top:0;bottom:0;background:#2f4f3c;width:{{ progressWidth }}"></div>
-      </div>
-    </div>
-
-    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;margin-bottom:20px">
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:#8a8175">Measured weight, seven-day mean and projection</div>
-      <div style="display:flex;align-items:baseline;gap:20px;flex-wrap:wrap">
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#8a8175">Goal projected {{ etaLong }}</div>
-        <div style="display:flex;gap:2px">
-          <button onClick="{{ setRange30 }}" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 13px;cursor:pointer;border:1px solid {{ tab30Border }};background:{{ tab30Bg }};color:{{ tab30Color }};min-height:32px">30d</button>
-          <button onClick="{{ setRange90 }}" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 13px;cursor:pointer;border:1px solid {{ tab90Border }};background:{{ tab90Bg }};color:{{ tab90Color }};min-height:32px">90d</button>
-          <button onClick="{{ setRangeAll }}" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 13px;cursor:pointer;border:1px solid {{ tabAllBorder }};background:{{ tabAllBg }};color:{{ tabAllColor }};min-height:32px">All</button>
-        </div>
-      </div>
-    </div>
-    <div style="height:clamp(240px,32vw,320px);position:relative">
-      <canvas ref="{{ chartRef }}" style="width:100%;height:100%"></canvas>
-    </div>
-
-    <div style="margin-top:clamp(40px,5vw,56px);padding-top:24px;border-top:1px solid #d8d2c8">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:16px">
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:#8a8175">Weekly averages</div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#8a8175">Last twelve weeks</div>
-      </div>
-      <div style="columns:300px;column-gap:clamp(24px,4vw,48px)">
-        <sc-for list="{{ weeklyRows }}" as="r" hint-placeholder-count="12">
-          <div style="display:grid;grid-template-columns:76px 1fr auto;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px solid #e8e3da;break-inside:avoid">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;color:#8a8175;white-space:nowrap">{{ r.week }}</span>
-            <span style="font-size:20px">{{ r.avg }}</span>
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:{{ r.color }};white-space:nowrap">{{ r.change }}</span>
-          </div>
-        </sc-for>
-      </div>
-    </div>
-
-    <div style="margin-top:clamp(40px,5vw,56px);padding-top:24px;border-top:1px solid #d8d2c8">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:16px">
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:#8a8175">Milestones</div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#8a8175">Recorded, and projected at present trend</div>
-      </div>
-      <div style="columns:330px;column-gap:clamp(24px,4vw,48px)">
-        <sc-for list="{{ milestones }}" as="m" hint-placeholder-count="13">
-          <div style="display:grid;grid-template-columns:auto 62px 1fr auto;align-items:baseline;gap:10px;padding:10px 0;border-bottom:1px solid #e8e3da;break-inside:avoid">
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:{{ m.mark }}">{{ m.icon }}</span>
-            <span style="font-size:22px;color:{{ m.tone }}">{{ m.w }}</span>
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#a09889">{{ m.label }}</span>
-            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a8175;white-space:nowrap">{{ m.dateStr }}</span>
-          </div>
-        </sc-for>
-      </div>
-    </div>
-
+    <div class="register" id="register"></div>
   </div>
+
+  <div class="progress">
+    <div class="labels">
+      <span id="pStart"></span><span id="pPct"></span><span id="pGoal"></span>
+    </div>
+    <div class="track"><div class="fill" id="pFill"></div></div>
+  </div>
+
+  <div class="chart-head">
+    <div class="eyebrow">Measured weight, seven-day mean and projection</div>
+    <div class="right">
+      <div class="meta" id="etaLabel"></div>
+      <div class="tabs" id="tabs">
+        <button data-range="30">30d</button>
+        <button data-range="90">90d</button>
+        <button data-range="all" class="on">All</button>
+      </div>
+    </div>
+  </div>
+  <div class="chart"><canvas id="chart"></canvas></div>
+
+  <section class="block">
+    <div class="block-head">
+      <div class="eyebrow">Weekly averages</div>
+      <div class="meta">Last twelve weeks</div>
+    </div>
+    <div class="cols" id="weekly"></div>
+  </section>
+
+  <section class="block">
+    <div class="block-head">
+      <div class="eyebrow">Milestones</div>
+      <div class="meta">Recorded, and projected at present trend</div>
+    </div>
+    <div class="cols" id="milestones"></div>
+  </section>
 </div>
-</x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;goalWeight&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:160,&quot;min&quot;:140,&quot;max&quot;:220,&quot;step&quot;:5,&quot;unit&quot;:&quot;lbs&quot;,&quot;tsType&quot;:&quot;number&quot;},&quot;heightInches&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:71,&quot;min&quot;:58,&quot;max&quot;:84,&quot;step&quot;:1,&quot;unit&quot;:&quot;in&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;BMI&quot;}}">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
 const rawData = [
   ["2025-09-06", 255.0], ["2025-10-18", 219.8], ["2025-10-22", 220.9], ["2025-10-23", 220.2],
   ["2025-10-24", 219.7], ["2025-10-25", 216.5], ["2025-10-26", 218.8], ["2025-10-27", 220.1],
@@ -180,6 +160,9 @@ const rawData = [
   ["2026-08-06", 170.1]
 ];
 
+const GOAL = 160;
+const HEIGHT_INCHES = 71;
+
 const MILESTONES = [
   { w: 255, label: 'Starting weight' },
   { w: 240, label: 'First fifteen' },
@@ -200,173 +183,165 @@ const DAY = 86400000;
 const dshort = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 const dlong = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
-class Component extends DCLogic {
-  state = { range: 'all' };
+const log = rawData.slice().sort((a, b) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0);
+const dates = log.map(d => new Date(d[0] + 'T12:00:00'));
+const weights = log.map(d => d[1]);
+const t0 = dates[0].getTime();
+const xs = dates.map(d => (d.getTime() - t0) / DAY);
+const n = xs.length;
+const sX = xs.reduce((a, b) => a + b, 0), sY = weights.reduce((a, b) => a + b, 0);
+const sXY = xs.reduce((a, x, i) => a + x * weights[i], 0);
+const sXX = xs.reduce((a, x) => a + x * x, 0);
+const slope = (n * sXY - sX * sY) / (n * sXX - sX * sX);
+const intercept = (sY - slope * sX) / n;
+const trend = xs.map(x => intercept + slope * x);
+const ratePerDay = Math.abs(slope);
+const movingAvg = weights.map((w, i) => {
+  if (i < 6) return null;
+  let s = 0; for (let j = i - 6; j <= i; j++) s += weights[j];
+  return +(s / 7).toFixed(1);
+});
+const lastDate = dates[dates.length - 1];
+const lastTrend = intercept + slope * xs[xs.length - 1];
+const ma = movingAvg.filter(v => v !== null);
+const displayWeight = ma[ma.length - 1];
+const startWeight = weights[0];
+const totalLost = startWeight - displayWeight;
+const toGo = displayWeight - GOAL;
+const pct = Math.min((totalLost / (startWeight - GOAL)) * 100, 100);
+const daysToGoal = (lastTrend - GOAL) / ratePerDay;
+const eta = new Date(lastDate.getTime() + daysToGoal * DAY);
+const bmi = (703 * displayWeight) / (HEIGHT_INCHES * HEIGHT_INCHES);
+const lowest = Math.min.apply(null, weights);
+const cutoff = lastDate.getTime() - 28 * DAY;
+const recent = log.filter(d => new Date(d[0] + 'T12:00:00').getTime() >= cutoff);
+const recentRate = (recent[0][1] - recent[recent.length - 1][1]) / 4;
 
-  compute() {
-    const goal = this.props.goalWeight ?? 160;
-    const height = this.props.heightInches ?? 71;
-    const dates = rawData.map(d => new Date(d[0] + 'T12:00:00'));
-    const weights = rawData.map(d => d[1]);
-    const t0 = dates[0].getTime();
-    const xs = dates.map(d => (d.getTime() - t0) / DAY);
-    const n = xs.length;
-    const sX = xs.reduce((a, b) => a + b, 0), sY = weights.reduce((a, b) => a + b, 0);
-    const sXY = xs.reduce((a, x, i) => a + x * weights[i], 0);
-    const sXX = xs.reduce((a, x) => a + x * x, 0);
-    const slope = (n * sXY - sX * sY) / (n * sXX - sX * sX);
-    const intercept = (sY - slope * sX) / n;
-    const trend = xs.map(x => intercept + slope * x);
-    const ratePerDay = Math.abs(slope);
-    const movingAvg = weights.map((w, i) => {
-      if (i < 6) return null;
-      let s = 0; for (let j = i - 6; j <= i; j++) s += weights[j];
-      return +(s / 7).toFixed(1);
-    });
-    const lastDate = dates[dates.length - 1];
-    const lastTrend = intercept + slope * xs[xs.length - 1];
-    const ma = movingAvg.filter(v => v !== null);
-    const displayWeight = ma[ma.length - 1];
-    const projDates = [], projWeights = [];
-    const daysToGoal = (lastTrend - goal) / ratePerDay;
-    for (let d = 0; d <= daysToGoal + 6; d += 3) {
-      const pw = lastTrend + slope * d;
-      if (pw >= goal - 1) { projDates.push(new Date(lastDate.getTime() + d * DAY)); projWeights.push(+pw.toFixed(1)); }
-    }
-    const cutoff = lastDate.getTime() - 28 * DAY;
-    const recent = rawData.filter(d => new Date(d[0] + 'T12:00:00').getTime() >= cutoff);
-    const recentRate = (recent[0][1] - recent[recent.length - 1][1]) / 4;
-    const lowest = Math.min.apply(null, weights);
-    return { goal, height, dates, weights, trend, movingAvg, ratePerDay, lastDate, lastTrend,
-      displayWeight, projDates, projWeights, daysToGoal, recentRate, lowest,
-      startWeight: weights[0], dayCount: Math.round(xs[xs.length - 1]) };
-  }
-
-  series(range, c) {
-    let d = c.dates, w = c.weights, tr = c.trend, ma = c.movingAvg;
-    if (range !== 'all') {
-      const cut = c.lastDate.getTime() - parseInt(range) * DAY;
-      const i = c.dates.findIndex(x => x.getTime() >= cut);
-      d = d.slice(i); w = w.slice(i); tr = tr.slice(i); ma = ma.slice(i);
-    }
-    const pd = range === 'all' ? c.projDates : [];
-    const pw = range === 'all' ? c.projWeights : [];
-    const pl = pd.length;
-    const vis = w.concat(pw).filter(v => v !== null).concat(range === 'all' ? [c.goal] : []);
-    return {
-      labels: d.concat(pd).map(dshort),
-      daily: w.concat(Array(pl).fill(null)),
-      mean: ma.concat(Array(pl).fill(null)),
-      trend: tr.map(v => +v.toFixed(1)).concat(Array(pl).fill(null)),
-      proj: Array(w.length).fill(null).concat(pw),
-      target: Array(w.length + pl).fill(c.goal),
-      yMin: Math.floor(Math.min.apply(null, vis) / 5) * 5 - 3,
-      yMax: Math.ceil(Math.max.apply(null, vis) / 5) * 5 + 3
-    };
-  }
-
-  build() {
-    if (!this.canvas) return;
-    if (!window.Chart) { setTimeout(() => this.build(), 120); return; }
-    const c = this.compute(), s = this.series(this.state.range, c);
-    if (this.chart) this.chart.destroy();
-    this.chart = new window.Chart(this.canvas.getContext('2d'), {
-      type: 'line',
-      data: {
-        labels: s.labels,
-        datasets: [
-          { label: 'Measured', data: s.daily, borderColor: 'rgba(26,24,21,0.16)', borderWidth: 1, pointRadius: 0, tension: 0.15, fill: false },
-          { label: 'Seven-day mean', data: s.mean, borderColor: '#1a1815', borderWidth: 2, pointRadius: 0, tension: 0.3, fill: false },
-          { label: 'Trend', data: s.trend, borderColor: 'rgba(47,79,60,0.45)', borderWidth: 1, borderDash: [5, 4], pointRadius: 0, fill: false },
-          { label: 'Projection', data: s.proj, borderColor: '#2f4f3c', borderWidth: 1.5, borderDash: [2, 4], pointRadius: 0, fill: false },
-          { label: 'Goal', data: s.target, borderColor: 'rgba(26,24,21,0.18)', borderWidth: 1, pointRadius: 0, fill: false }
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false, animation: false,
-        interaction: { intersect: false, mode: 'index' },
-        plugins: {
-          legend: { display: false },
-          tooltip: { backgroundColor: '#1a1815', titleColor: '#faf8f5', bodyColor: '#faf8f5', borderWidth: 0, cornerRadius: 2, padding: 10, titleFont: { family: 'IBM Plex Mono', size: 11 }, bodyFont: { family: 'IBM Plex Mono', size: 11 } }
-        },
-        scales: {
-          x: { border: { display: false }, ticks: { color: '#a09889', font: { family: 'IBM Plex Mono', size: 10 }, maxTicksLimit: 10, maxRotation: 0, autoSkipPadding: 20 }, grid: { display: false } },
-          y: { min: s.yMin, max: s.yMax, border: { display: false }, ticks: { color: '#a09889', font: { family: 'IBM Plex Mono', size: 10 }, stepSize: 10 }, grid: { color: 'rgba(26,24,21,0.07)' } }
-        }
-      }
-    });
-  }
-
-  componentDidUpdate() { this.build(); }
-  componentWillUnmount() { if (this.chart) this.chart.destroy(); }
-
-  renderVals() {
-    const c = this.compute();
-    const totalLost = c.startWeight - c.displayWeight;
-    const toGo = c.displayWeight - c.goal;
-    const pct = Math.min((totalLost / (c.startWeight - c.goal)) * 100, 100);
-    const eta = new Date(c.lastDate.getTime() + c.daysToGoal * DAY);
-    const bmi = (703 * c.displayWeight) / (c.height * c.height);
-
-    const buckets = {};
-    rawData.forEach(([ds, w]) => {
-      const d = new Date(ds + 'T12:00:00');
-      const ws = new Date(d); ws.setDate(d.getDate() - d.getDay());
-      (buckets[ws.toISOString().slice(0, 10)] = buckets[ws.toISOString().slice(0, 10)] || []).push(w);
-    });
-    const keys = Object.keys(buckets).sort();
-    const avgOf = k => buckets[k].reduce((a, b) => a + b, 0) / buckets[k].length;
-    const weeklyRows = keys.map((k, i) => {
-      const avg = avgOf(k);
-      const ch = i > 0 ? avg - avgOf(keys[i - 1]) : null;
-      return {
-        week: dshort(new Date(k + 'T12:00:00')),
-        avg: avg.toFixed(1),
-        change: ch === null ? '—' : (ch > 0 ? '+' : '−') + Math.abs(ch).toFixed(1),
-        color: ch === null ? '#a09889' : ch < 0 ? '#2f4f3c' : '#8a3a2e'
-      };
-    }).reverse().slice(0, 12);
-
-    const milestones = MILESTONES.map(m => {
-      const achieved = c.displayWeight <= m.w;
-      let dateStr = '';
-      if (achieved) {
-        const hit = rawData.find(d => d[1] <= m.w);
-        if (hit) dateStr = dlong(new Date(hit[0] + 'T12:00:00'));
-      } else {
-        const days = (c.lastTrend - m.w) / c.ratePerDay;
-        if (days > 0) dateStr = dlong(new Date(c.lastDate.getTime() + days * DAY));
-      }
-      return { w: m.w, label: m.label, dateStr, icon: achieved ? '■' : '□',
-        mark: achieved ? '#2f4f3c' : '#c9c2b6', tone: achieved ? '#1a1815' : '#a09889' };
-    });
-
-    const tab = r => this.state.range === r
-      ? { border: '#1a1815', bg: '#1a1815', color: '#faf8f5' }
-      : { border: '#d8d2c8', bg: 'transparent', color: '#8a8175' };
-    const t30 = tab('30'), t90 = tab('90'), ta = tab('all');
-
-    return {
-      chartRef: el => { if (el && el !== this.canvas) { this.canvas = el; this.build(); } },
-      displayWeight: c.displayWeight.toFixed(1),
-      lastRawLabel: c.weights[c.weights.length - 1].toFixed(1) + ' lbs',
-      startLabel: String(c.startWeight), goalLabel: String(c.goal),
-      totalLost: totalLost.toFixed(1), toGo: toGo.toFixed(1),
-      progressPct: pct.toFixed(1), progressWidth: pct.toFixed(1) + '%',
-      recentRate: c.recentRate.toFixed(1), ratePerWeek: (c.ratePerDay * 7).toFixed(1),
-      lowestWeight: c.lowest.toFixed(1), bmi: bmi.toFixed(1),
-      dayCount: c.dayCount, entryCount: rawData.length,
-      lastDateLong: dlong(c.lastDate), etaLong: dlong(eta),
-      weeklyRows, milestones,
-      setRange30: () => this.setState({ range: '30' }),
-      setRange90: () => this.setState({ range: '90' }),
-      setRangeAll: () => this.setState({ range: 'all' }),
-      tab30Border: t30.border, tab30Bg: t30.bg, tab30Color: t30.color,
-      tab90Border: t90.border, tab90Bg: t90.bg, tab90Color: t90.color,
-      tabAllBorder: ta.border, tabAllBg: ta.bg, tabAllColor: ta.color
-    };
-  }
+const projDates = [], projWeights = [];
+for (let d = 0; d <= daysToGoal + 6; d += 3) {
+  const pw = lastTrend + slope * d;
+  if (pw >= GOAL - 1) { projDates.push(new Date(lastDate.getTime() + d * DAY)); projWeights.push(+pw.toFixed(1)); }
 }
+
+document.getElementById('headMeta').textContent =
+  'Day ' + Math.round(xs[xs.length - 1]) + ' · ' + log.length + ' entries · ' + dlong(lastDate);
+document.getElementById('displayWeight').textContent = displayWeight.toFixed(1);
+document.getElementById('caption').textContent =
+  'Seven-day mean · ' + weights[weights.length - 1].toFixed(1) + ' lbs last measured';
+
+document.getElementById('register').innerHTML = [
+  ['Total reduction', totalLost.toFixed(1) + ' lbs'],
+  ['Remaining to ' + GOAL, toGo.toFixed(1) + ' lbs'],
+  ['Rate, 4 weeks', recentRate.toFixed(1) + ' lbs/wk'],
+  ['Trend, overall', (ratePerDay * 7).toFixed(1) + ' lbs/wk'],
+  ['Lowest measured', lowest.toFixed(1) + ' lbs'],
+  ['Body mass index', bmi.toFixed(1)]
+].map(r => '<div><span class="dt">' + r[0] + '</span><span class="dd">' + r[1] + '</span></div>')
+ .join('').replace(/class="dt"/g, 'class="k" style="letter-spacing:2px;text-transform:uppercase;font-size:10px"')
+ .replace(/class="dd"/g, 'style="font-size:26px;white-space:nowrap"');
+
+document.getElementById('pStart').textContent = startWeight;
+document.getElementById('pGoal').textContent = GOAL;
+document.getElementById('pPct').textContent = pct.toFixed(1) + '% of the way to ' + GOAL;
+document.getElementById('pFill').style.width = pct.toFixed(1) + '%';
+document.getElementById('etaLabel').textContent = 'Goal projected ' + dlong(eta);
+
+const buckets = {};
+log.forEach(([ds, w]) => {
+  const d = new Date(ds + 'T12:00:00');
+  const ws = new Date(d); ws.setDate(d.getDate() - d.getDay());
+  const k = ws.toISOString().slice(0, 10);
+  (buckets[k] = buckets[k] || []).push(w);
+});
+const keys = Object.keys(buckets).sort();
+const avgOf = k => buckets[k].reduce((a, b) => a + b, 0) / buckets[k].length;
+document.getElementById('weekly').innerHTML = keys.map((k, i) => {
+  const avg = avgOf(k);
+  const ch = i > 0 ? avg - avgOf(keys[i - 1]) : null;
+  const color = ch === null ? '#a09889' : ch < 0 ? '#2f4f3c' : '#8a3a2e';
+  const label = ch === null ? '—' : (ch > 0 ? '+' : '−') + Math.abs(ch).toFixed(1);
+  return '<div class="week-row"><span class="k">' + dshort(new Date(k + 'T12:00:00')) +
+    '</span><span class="v">' + avg.toFixed(1) +
+    '</span><span class="d" style="color:' + color + '">' + label + '</span></div>';
+}).reverse().slice(0, 12).join('');
+
+document.getElementById('milestones').innerHTML = MILESTONES.map(m => {
+  const achieved = displayWeight <= m.w;
+  let dateStr = '';
+  if (achieved) {
+    const hit = log.find(d => d[1] <= m.w);
+    if (hit) dateStr = dlong(new Date(hit[0] + 'T12:00:00'));
+  } else {
+    const days = (lastTrend - m.w) / ratePerDay;
+    if (days > 0) dateStr = dlong(new Date(lastDate.getTime() + days * DAY));
+  }
+  return '<div class="ms-row"><span class="k" style="color:' + (achieved ? '#2f4f3c' : '#c9c2b6') + '">' +
+    (achieved ? '■' : '□') + '</span><span class="ms-w" style="color:' + (achieved ? '#1a1815' : '#a09889') + '">' +
+    m.w + '</span><span class="ms-l">' + m.label + '</span><span class="ms-d">' + dateStr + '</span></div>';
+}).join('');
+
+function series(range) {
+  let d = dates, w = weights, tr = trend, mav = movingAvg;
+  if (range !== 'all') {
+    const cut = lastDate.getTime() - parseInt(range) * DAY;
+    const i = dates.findIndex(x => x.getTime() >= cut);
+    d = d.slice(i); w = w.slice(i); tr = tr.slice(i); mav = mav.slice(i);
+  }
+  const pd = range === 'all' ? projDates : [];
+  const pw = range === 'all' ? projWeights : [];
+  const pl = pd.length;
+  const vis = w.concat(pw).filter(v => v !== null).concat(range === 'all' ? [GOAL] : []);
+  return {
+    labels: d.concat(pd).map(dshort),
+    daily: w.concat(Array(pl).fill(null)),
+    mean: mav.concat(Array(pl).fill(null)),
+    trend: tr.map(v => +v.toFixed(1)).concat(Array(pl).fill(null)),
+    proj: Array(w.length).fill(null).concat(pw),
+    target: Array(w.length + pl).fill(GOAL),
+    yMin: Math.floor(Math.min.apply(null, vis) / 5) * 5 - 3,
+    yMax: Math.ceil(Math.max.apply(null, vis) / 5) * 5 + 3
+  };
+}
+
+let chart = null;
+function draw(range) {
+  const s = series(range);
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById('chart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: s.labels,
+      datasets: [
+        { label: 'Measured', data: s.daily, borderColor: 'rgba(26,24,21,0.16)', borderWidth: 1, pointRadius: 0, tension: 0.15, fill: false },
+        { label: 'Seven-day mean', data: s.mean, borderColor: '#1a1815', borderWidth: 2, pointRadius: 0, tension: 0.3, fill: false },
+        { label: 'Trend', data: s.trend, borderColor: 'rgba(47,79,60,0.45)', borderWidth: 1, borderDash: [5,4], pointRadius: 0, fill: false },
+        { label: 'Projection', data: s.proj, borderColor: '#2f4f3c', borderWidth: 1.5, borderDash: [2,4], pointRadius: 0, fill: false },
+        { label: 'Goal', data: s.target, borderColor: 'rgba(26,24,21,0.18)', borderWidth: 1, pointRadius: 0, fill: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: {
+        legend: { display: false },
+        tooltip: { backgroundColor: '#1a1815', titleColor: '#faf8f5', bodyColor: '#faf8f5', borderWidth: 0, cornerRadius: 2, padding: 10, titleFont: { family: 'IBM Plex Mono', size: 11 }, bodyFont: { family: 'IBM Plex Mono', size: 11 } }
+      },
+      scales: {
+        x: { border: { display: false }, ticks: { color: '#a09889', font: { family: 'IBM Plex Mono', size: 10 }, maxTicksLimit: 10, maxRotation: 0, autoSkipPadding: 20 }, grid: { display: false } },
+        y: { min: s.yMin, max: s.yMax, border: { display: false }, ticks: { color: '#a09889', font: { family: 'IBM Plex Mono', size: 10 }, stepSize: 10 }, grid: { color: 'rgba(26,24,21,0.07)' } }
+      }
+    }
+  });
+}
+draw('all');
+
+document.querySelectorAll('#tabs button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#tabs button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    draw(b.dataset.range);
+  });
+});
 </script>
 </body>
 </html>
